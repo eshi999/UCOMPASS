@@ -2282,3 +2282,14 @@ p {
   .listen-bars i,
   .listen-btn.is-loading span:first-of-type { animation: none; }
 }
+
+/* ---------- Voice input note (mic errors / unsupported browser) ---------- */
+.composer-note {
+  margin: 6px 4px 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+.composer-note:empty {
+  display: none;
+}
