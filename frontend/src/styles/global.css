@@ -1309,34 +1309,6 @@ p {
   color: var(--ink);
   padding-top: 2px;
 }
-.paw-markdown {
-  line-height: 1.45;
-}
-.paw-markdown p,
-.paw-markdown ul,
-.paw-markdown ol {
-  margin: 0 0 8px;
-}
-.paw-markdown > :last-child {
-  margin-bottom: 0;
-}
-.paw-markdown ul,
-.paw-markdown ol {
-  padding-left: 20px;
-}
-.paw-markdown li {
-  margin: 4px 0;
-}
-.paw-markdown strong {
-  font-weight: 700;
-  color: var(--navy);
-}
-.paw-markdown a {
-  color: var(--royal);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 .paw-text.strong {
   font-weight: 600;
 }

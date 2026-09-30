@@ -1,4 +1,3 @@
-import ReactMarkdown from 'react-markdown';
 import type { PawBlock } from '../types';
 import { EventCard, RecClassCard } from './EventCards';
 import { ResourceCard } from './ResourceCard';
@@ -11,21 +10,7 @@ import { PromptChip } from './Chips';
 export function PawBlockView({ block, onPick }: { block: PawBlock; onPick: (text: string) => void }) {
   switch (block.type) {
     case 'text':
-      return (
-        <div className="paw-text paw-markdown">
-          <ReactMarkdown
-            components={{
-              a: ({ children, ...props }) => (
-                <a {...props} target="_blank" rel="noreferrer">
-                  {children}
-                </a>
-              ),
-            }}
-          >
-            {block.text}
-          </ReactMarkdown>
-        </div>
-      );
+      return <p className="paw-text">{block.text}</p>;
 
     case 'events':
       return (
