@@ -1,16 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ChatTurn } from '../types';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import type { ChatTurn, PawBlock, StudentProfile } from '../types';
 import { ChatComposer } from '../components/ChatComposer';
 import { PawAvatar } from '../components/PawAvatar';
 import { PawBlockView } from '../components/PawBlockView';
+import { ListenButton } from '../components/ListenButton';
 import { Icon, type IconName } from '../components/Icon';
 import { quickPrompts, tryAsking } from '../data/pawScripts';
-import { askPaw } from '../services/pawService';
+import { askPaw, resetPawConversation } from '../services/pawService';
+import { stopPaw } from '../services/voiceService';
 import logo from '../assets/ucompass-logo.png';
+
+const firstTextIndex = (blocks: PawBlock[] = []) => blocks.findIndex((b) => b.type === 'text');
 
 const chipIcons: IconName[] = ['calendar', 'heart', 'ticket', 'users', 'book', 'car'];
 
-export function TalkPage({ profileName, initialAsk }: { profileName: string; initialAsk?: string }) {
+export function TalkPage({
+  profileName,
+  profile,
+  initialAsk,
+}: {
+  profileName: string;
+  profile?: StudentProfile;
+  initialAsk?: string;
+}) {
   const [input, setInput] = useState('');
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [thinking, setThinking] = useState(false);
@@ -30,9 +42,22 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
     setTurns((t) => [...t, { id: `u${id}`, role: 'user', text }]);
     setInput('');
     setThinking(true);
-    const blocks = await askPaw(text);
-    setThinking(false);
-    setTurns((t) => [...t, { id: `p${id}`, role: 'paw', blocks }]);
+    try {
+      const blocks = await askPaw(text, profile);
+      setTurns((t) => [...t, { id: `p${id}`, role: 'paw', blocks }]);
+    } catch (error) {
+      console.error(error);
+      setTurns((t) => [
+        ...t,
+        {
+          id: `p${id}`,
+          role: 'paw',
+          blocks: [{ type: 'text', text: 'Paw could not reach the campus assistant right now. Please try again in a moment.' }],
+        },
+      ]);
+    } finally {
+      setThinking(false);
+    }
   };
 
   // Demo helper: ?ask=first|second sends scripted questions in order.
@@ -47,6 +72,8 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
   }, [initialAsk]);
 
   const reset = () => {
+    stopPaw();
+    resetPawConversation();
     setTurns([]);
     setInput('');
   };
@@ -135,7 +162,11 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
               <PawAvatar size={24} />
               <div className="paw-reply">
                 {t.blocks?.map((b, i) => (
-                  <PawBlockView key={i} block={b} onPick={send} />
+                  <Fragment key={i}>
+                    <PawBlockView block={b} onPick={send} />
+                    {/* Tap to listen: speaks only Paw's first message line, never the cards. */}
+                    {b.type === 'text' && i === firstTextIndex(t.blocks) && <ListenButton id={t.id} text={b.text} />}
+                  </Fragment>
                 ))}
               </div>
             </div>

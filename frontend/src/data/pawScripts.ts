@@ -65,6 +65,8 @@ export type ScenarioId =
   | 'lonely'
   | 'lonely-detail'
   | 'academic'
+  | 'career'
+  | 'study'
   | 'boston'
   | 'fallback';
 
@@ -116,6 +118,16 @@ export const scenarios: Record<ScenarioId, PawBlock[]> = {
     { type: 'text', text: 'Happy to help. Here’s where students usually start.' },
     { type: 'resources', heading: 'Academic help', resources: resources.filter((r) => r.id === 'aac' || r.id === 'career-center').slice(0, 1) },
     { type: 'followups', options: ['Find a study group', 'Tutoring for my course', 'Talk to an advisor'] },
+  ],
+  career: [
+    { type: 'text', text: 'Here’s how to get started on internships and jobs.' },
+    { type: 'resources', heading: 'Career support', resources: resources.filter((r) => r.id === 'career-center' || r.id === 'ciss') },
+    { type: 'followups', options: ['Resume help', 'Career events this week'] },
+  ],
+  study: [
+    { type: 'text', text: 'The library usually has the latest hours on campus during the semester. Check tonight’s posted hours before you go.' },
+    { type: 'resources', heading: 'Study spots', resources: resources.filter((r) => r.id === 'aac' || r.id === 'transit') },
+    { type: 'followups', options: ['Find a study group', 'Tutoring for my course'] },
   ],
   boston: [
     { type: 'rides', heading: 'Rides to Boston', rides: rides.filter((r) => r.to === 'Boston') },

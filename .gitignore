@@ -1,4 +1,3 @@
-# Secrets
 .env
 .env.*
 !.env.example
@@ -16,7 +15,7 @@ frontend/node_modules/
 dist/
 build/
 
-# OS / editor
+# OS/editor
 .DS_Store
 .vscode/
 .idea/

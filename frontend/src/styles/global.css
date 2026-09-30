@@ -2210,3 +2210,75 @@ p {
     transition: none !important;
   }
 }
+
+/* ---------- Paw voice (tap to listen) ---------- */
+.listen-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: -6px;
+}
+.listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px; /* comfortable touch target without being loud */
+  padding: 4px 12px 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink-2);
+  font: 600 13px/1 var(--font-body);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.listen-btn:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+.listen-btn:focus-visible {
+  outline: 2px solid var(--royal);
+  outline-offset: 2px;
+}
+.listen-btn.is-active {
+  background: var(--royal-soft);
+  border-color: var(--royal-soft);
+  color: var(--royal);
+}
+.listen-btn.is-loading span:first-of-type {
+  animation: listen-pulse 1s ease-in-out infinite;
+}
+.listen-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.listen-bars i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: currentColor;
+  animation: listen-bar 0.9s ease-in-out infinite;
+}
+.listen-bars i:nth-child(2) { animation-delay: 0.15s; }
+.listen-bars i:nth-child(3) { animation-delay: 0.3s; }
+.listen-status {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.listen-status:empty {
+  display: none;
+}
+@keyframes listen-bar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+@keyframes listen-pulse {
+  50% { opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .listen-bars i,
+  .listen-btn.is-loading span:first-of-type { animation: none; }
+}
