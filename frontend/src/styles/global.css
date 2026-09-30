@@ -1050,6 +1050,11 @@ p {
   font-weight: 600;
   color: var(--royal);
 }
+.brand-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+}
 .greeting {
   font-size: 13px;
   color: var(--grey);

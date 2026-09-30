@@ -6,6 +6,7 @@ import { PawBlockView } from '../components/PawBlockView';
 import { Icon, type IconName } from '../components/Icon';
 import { quickPrompts, tryAsking } from '../data/pawScripts';
 import { askPaw } from '../services/pawService';
+import logo from '../assets/ucompass-logo.png';
 
 const chipIcons: IconName[] = ['calendar', 'heart', 'ticket', 'users', 'book', 'car'];
 
@@ -59,7 +60,7 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
       <div className="page talk-home">
         <header className="app-header">
           <div className="brand">
-            <PawAvatar size={30} />
+            <img className="brand-logo" src={logo} alt="" />
             <span className="wordmark">
               U<b>Compass</b>
             </span>
