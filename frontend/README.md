@@ -2,8 +2,9 @@
 
 One campus. One conversation.
 
-A mobile first, UI only prototype of UCompass and its guide, Paw. No backend, no AI, no auth.
-All content is mock data. Not an official UConn product.
+A mobile first prototype of UCompass and its guide, Paw. The Talk screen calls the hosted
+Microsoft Foundry agent through a local Vite dev proxy. Directory/feed content is still mock data.
+Not an official UConn product.
 
 ## Run it
 
@@ -12,6 +13,15 @@ npm install
 npm run dev        # http://localhost:5173
 npm run build      # type check + production build into dist/
 ```
+
+For the POC agent call, sign in with Azure CLI before starting Vite:
+
+```bash
+az login
+```
+
+The browser calls `/api/paw`; `vite.config.ts` forwards that request to the hosted Foundry
+agent using the Azure CLI token. No `VITE_FOUNDRY_API_KEY` is needed.
 
 On desktop the app sits in a centered 390 x 844 phone frame. On a phone (width 500px or less) it fills the screen.
 
@@ -37,7 +47,7 @@ src/
     profile.ts          Mock profile, For You feed, onboarding questions
     pawScripts.ts       Quick prompts + scripted Paw replies per scenario
   services/             BACKEND PLUG IN POINTS
-    pawService.ts       askPaw(text) -> PawBlock[]  (mock keyword matcher today)
+    pawService.ts       askPaw(text) -> PawBlock[]  (calls /api/paw dev proxy)
     dataService.ts      getResources(), getRides(), getForYouFeed(), postRide() ...
   components/           Reusable UI (AppShell, BottomNav, BottomSheet, PawAvatar,
                         ChatComposer, PromptChip, TagChip, ProfileChip, SectionHeader,
@@ -49,7 +59,7 @@ src/
   styles/global.css     Design tokens + all styles
 ```
 
-Pages never import from `src/data` directly. They go through `src/services`, so swapping mock data for real APIs does not touch the UI.
+Pages never import from `src/data` directly. They go through `src/services`, so swapping the remaining mock data for real APIs does not touch the UI.
 
 ## Connecting a backend later
 

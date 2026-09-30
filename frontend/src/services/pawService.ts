@@ -1,6 +1,32 @@
 import type { PawBlock } from '../types';
 import { scenarios, type ScenarioId } from '../data/pawScripts';
 
+const pawApiUrl = import.meta.env.VITE_PAW_API_URL ?? '/api/paw';
+const useMockPaw = import.meta.env.VITE_USE_MOCK_PAW === 'true';
+
+interface FoundryTextContent {
+  type?: string;
+  text?: string;
+}
+
+interface FoundryOutputItem {
+  content?: FoundryTextContent[];
+}
+
+interface FoundryResponse {
+  id?: string;
+  agent_session_id?: string;
+  output_text?: string;
+  output?: FoundryOutputItem[];
+}
+
+interface ConversationState {
+  previousResponseId?: string;
+  agentSessionId?: string;
+}
+
+const conversationState: ConversationState = {};
+
 /**
  * Mock Paw assistant.
  *
@@ -22,8 +48,62 @@ export function matchScenario(text: string): ScenarioId {
   return 'fallback';
 }
 
-export async function askPaw(text: string): Promise<PawBlock[]> {
+export function resetPawConversation() {
+  conversationState.previousResponseId = undefined;
+  conversationState.agentSessionId = undefined;
+}
+
+function extractResponseText(response: FoundryResponse): string {
+  const outputText = response.output_text?.trim();
+  if (outputText) return outputText;
+
+  const textParts =
+    response.output
+      ?.flatMap((item) => item.content ?? [])
+      .map((content) => content.text?.trim() ?? '')
+      .filter(Boolean) ?? [];
+
+  if (textParts.length) return textParts.join('\n\n');
+  return 'I checked Paw, but did not receive a readable answer. Please try again.';
+}
+
+async function askMockPaw(text: string): Promise<PawBlock[]> {
   // Simulated latency so the typing indicator is visible in demos.
   await new Promise((r) => setTimeout(r, 650));
   return scenarios[matchScenario(text)];
+}
+
+async function askFoundryPaw(text: string): Promise<PawBlock[]> {
+  const body: Record<string, unknown> = {
+    input: text,
+    stream: false,
+  };
+
+  if (conversationState.previousResponseId) body.previous_response_id = conversationState.previousResponseId;
+  if (conversationState.agentSessionId) body.agent_session_id = conversationState.agentSessionId;
+
+  const response = await fetch(pawApiUrl, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Foundry request failed (${response.status})${detail ? `: ${detail}` : ''}`);
+  }
+
+  const data = (await response.json()) as FoundryResponse;
+  conversationState.previousResponseId = data.id ?? conversationState.previousResponseId;
+  conversationState.agentSessionId = data.agent_session_id ?? conversationState.agentSessionId;
+
+  return [{ type: 'text', text: extractResponseText(data) }];
+}
+
+export async function askPaw(text: string): Promise<PawBlock[]> {
+  if (useMockPaw) return askMockPaw(text);
+  return askFoundryPaw(text);
 }

@@ -5,7 +5,7 @@ import { PawAvatar } from '../components/PawAvatar';
 import { PawBlockView } from '../components/PawBlockView';
 import { Icon, type IconName } from '../components/Icon';
 import { quickPrompts, tryAsking } from '../data/pawScripts';
-import { askPaw } from '../services/pawService';
+import { askPaw, resetPawConversation } from '../services/pawService';
 import logo from '../assets/ucompass-logo.png';
 
 const chipIcons: IconName[] = ['calendar', 'heart', 'ticket', 'users', 'book', 'car'];
@@ -30,9 +30,22 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
     setTurns((t) => [...t, { id: `u${id}`, role: 'user', text }]);
     setInput('');
     setThinking(true);
-    const blocks = await askPaw(text);
-    setThinking(false);
-    setTurns((t) => [...t, { id: `p${id}`, role: 'paw', blocks }]);
+    try {
+      const blocks = await askPaw(text);
+      setTurns((t) => [...t, { id: `p${id}`, role: 'paw', blocks }]);
+    } catch (error) {
+      console.error(error);
+      setTurns((t) => [
+        ...t,
+        {
+          id: `p${id}`,
+          role: 'paw',
+          blocks: [{ type: 'text', text: 'Paw could not reach the campus assistant right now. Please try again in a moment.' }],
+        },
+      ]);
+    } finally {
+      setThinking(false);
+    }
   };
 
   // Demo helper: ?ask=first|second sends scripted questions in order.
@@ -47,6 +60,7 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
   }, [initialAsk]);
 
   const reset = () => {
+    resetPawConversation();
     setTurns([]);
     setInput('');
   };
