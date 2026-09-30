@@ -94,7 +94,7 @@ if "ciss" not in [r["id"] for r in internship["resources"]]:
 # Health, Foundry off
 h = client.get("/api/health").json()
 print("Health:", h)
-if h != {"status": "ok", "foundryConfigured": False, "localAgentAvailable": True}:
+if (h["status"], h["foundryConfigured"], h["localAgentAvailable"]) != ("ok", False, True):
     failures.append(("health", "", str(h)))
 
 # Foundry on but unreachable -> must fall back to local, quickly, with the same shape.

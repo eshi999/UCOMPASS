@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_PAW_API_URL?: string;
   readonly VITE_USE_MOCK_PAW?: string;
+  readonly VITE_PAW_VOICE_URL?: string;
 }
 
 interface ImportMeta {

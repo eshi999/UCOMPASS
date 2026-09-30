@@ -1,12 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ChatTurn, StudentProfile } from '../types';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import type { ChatTurn, PawBlock, StudentProfile } from '../types';
 import { ChatComposer } from '../components/ChatComposer';
 import { PawAvatar } from '../components/PawAvatar';
 import { PawBlockView } from '../components/PawBlockView';
+import { ListenButton } from '../components/ListenButton';
 import { Icon, type IconName } from '../components/Icon';
 import { quickPrompts, tryAsking } from '../data/pawScripts';
 import { askPaw, resetPawConversation } from '../services/pawService';
+import { stopPaw } from '../services/voiceService';
 import logo from '../assets/ucompass-logo.png';
+
+const firstTextIndex = (blocks: PawBlock[] = []) => blocks.findIndex((b) => b.type === 'text');
 
 const chipIcons: IconName[] = ['calendar', 'heart', 'ticket', 'users', 'book', 'car'];
 
@@ -68,6 +72,7 @@ export function TalkPage({
   }, [initialAsk]);
 
   const reset = () => {
+    stopPaw();
     resetPawConversation();
     setTurns([]);
     setInput('');
@@ -157,7 +162,11 @@ export function TalkPage({
               <PawAvatar size={24} />
               <div className="paw-reply">
                 {t.blocks?.map((b, i) => (
-                  <PawBlockView key={i} block={b} onPick={send} />
+                  <Fragment key={i}>
+                    <PawBlockView block={b} onPick={send} />
+                    {/* Tap to listen: speaks only Paw's first message line, never the cards. */}
+                    {b.type === 'text' && i === firstTextIndex(t.blocks) && <ListenButton id={t.id} text={b.text} />}
+                  </Fragment>
                 ))}
               </div>
             </div>

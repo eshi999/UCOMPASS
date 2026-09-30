@@ -24,6 +24,8 @@ No Azure login or API key is needed. If the backend is not running, Paw falls ba
 scripted demo replies in `src/data/pawScripts.ts`, so the demo never shows a dead screen.
 Set `VITE_USE_MOCK_PAW=true` to force the scripted replies.
 
+Paw replies have a small **Listen** button (tap to listen, never automatic). It uses ElevenLabs through the backend when `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` are set in `backend/.env`, and the browser's built in speech otherwise. See `backend/README.md`.
+
 On desktop the app sits in a centered 390 x 844 phone frame. On a phone (width 500px or less) it fills the screen.
 
 ### Demo shortcuts (URL params)
@@ -69,6 +71,6 @@ Pages never import from `src/data` directly. They go through `src/services`, so 
 3. **Saved items / interest / joins:** `toggleSave` in `src/components/AppContext.tsx` is local state today. Point it at a "saved" API.
 4. **Profile + onboarding:** `profileFromAnswers()` in `src/App.tsx` turns answers into a profile. Send the answers to a profile endpoint there.
 5. **Post a ride:** `dataService.postRide()` returns a local copy. Replace with a POST.
-6. **Voice:** the mic in `ChatComposer.tsx` only toggles a "listening" visual.
+6. **Voice:** Paw can speak replies (`src/services/voiceService.ts`, `src/components/ListenButton.tsx`). The mic in `ChatComposer.tsx` (voice input) still only toggles a "listening" visual.
 
 Before launch, replace every `website: '#'` in `src/data/resources.ts` with a verified official link and real "last verified" dates.

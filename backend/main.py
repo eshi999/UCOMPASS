@@ -7,11 +7,21 @@ Run from this folder:
 
 import logging
 import os
+from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# Load backend/.env if python-dotenv is installed (keys stay on the server).
+try:
+    from dotenv import load_dotenv
 
-from router import router
+    load_dotenv(Path(__file__).with_name(".env"))
+except ImportError:
+    pass
+
+from fastapi import FastAPI  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+
+import voice  # noqa: E402
+from router import router  # noqa: E402
 
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 
@@ -27,3 +37,4 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(voice.router)

@@ -63,3 +63,4 @@ class HealthResponse(BaseModel):
     status: str = "ok"
     foundryConfigured: bool
     localAgentAvailable: bool = True
+    voiceConfigured: bool = False

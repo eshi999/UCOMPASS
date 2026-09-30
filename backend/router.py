@@ -18,6 +18,7 @@ from fastapi import APIRouter
 
 import foundry_agent
 import local_agent
+import voice
 from schemas import ChatRequest, ChatResponse, HealthResponse
 
 log = logging.getLogger("ucompass.router")
@@ -63,4 +64,7 @@ def reset(req: ChatRequest) -> dict:
 
 @router.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    return HealthResponse(status="ok", foundryConfigured=foundry_agent.is_configured(), localAgentAvailable=True)
+    return HealthResponse(
+        status="ok", foundryConfigured=foundry_agent.is_configured(), localAgentAvailable=True,
+        voiceConfigured=voice.is_configured(),
+    )

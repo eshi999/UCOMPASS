@@ -3,7 +3,8 @@ type IconName =
   | 'chat' | 'sparkle' | 'grid' | 'people' | 'user' | 'mic' | 'send' | 'search'
   | 'bookmark' | 'bookmarkFill' | 'clock' | 'pin' | 'ticket' | 'chevronRight' | 'chevronLeft'
   | 'close' | 'car' | 'book' | 'calendar' | 'plus' | 'shield' | 'external' | 'check'
-  | 'info' | 'heart' | 'settings' | 'lock' | 'edit' | 'arrowRight' | 'bus' | 'users';
+  | 'info' | 'heart' | 'settings' | 'lock' | 'edit' | 'arrowRight' | 'bus' | 'users'
+  | 'volume' | 'stop' | 'replay';
 
 const paths: Record<IconName, JSX.Element> = {
   chat: <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" />,
@@ -37,6 +38,9 @@ const paths: Record<IconName, JSX.Element> = {
   arrowRight: <path d="M5 12h14M13 6l6 6-6 6" />,
   bus: <><rect x="5" y="3.5" width="14" height="14" rx="3" /><path d="M5 11h14M8 17.5V20M16 17.5V20" /><circle cx="8.5" cy="14.3" r=".6" /><circle cx="15.5" cy="14.3" r=".6" /></>,
   users: <><circle cx="9" cy="9" r="3" /><circle cx="16" cy="9" r="3" /><path d="M3.5 19c.5-2.8 2.7-4.5 5.5-4.5M20.5 19c-.5-2.8-2.7-4.5-5.5-4.5M9 14.5c1.1-.3 4.9-.3 6 0" /></>,
+  volume: <><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></>,
+  stop: <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" />,
+  replay: <><path d="M5 12a7 7 0 1 0 2.1-5" /><path d="M5 4v4h4" /></>,
 };
 
 export function Icon({ name, size = 20, strokeWidth = 1.8 }: { name: IconName; size?: number; strokeWidth?: number }) {

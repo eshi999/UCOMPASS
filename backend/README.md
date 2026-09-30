@@ -9,6 +9,7 @@ cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 python smoke_test.py            # 46 query checks + fallback checks
+python voice_test.py            # voice endpoint checks (no real ElevenLabs call)
 ```
 
 The frontend (`npm run dev` in `frontend/`) proxies `/api/*` here.
@@ -89,3 +90,25 @@ uvicorn main:app --reload --port 8000
 ```
 
 When Foundry replies, its text becomes `message`, the cards still come from local data, and `mode` is `"foundry"`. If Foundry is off, has no credentials, times out (`FOUNDRY_TIMEOUT_SECONDS`, default 15) or returns nothing readable, the local reply is returned instead. The browser never sees a token.
+
+## Paw voice (optional, ElevenLabs)
+
+`POST /api/voice` with `{"text": "I found three Rec classes tomorrow afternoon."}` returns MP3 audio (`audio/mpeg`). The frontend shows a small **Listen** button under Paw's message line; it only ever speaks that line, never the cards, and never plays on its own.
+
+Set up:
+
+```bash
+cd backend
+cp .env.example .env                      # .env is git ignored
+# edit .env:
+#   ELEVENLABS_API_KEY=your key
+#   ELEVENLABS_VOICE_ID=a voice id from your ElevenLabs Voice Library
+uvicorn main:app --reload --port 8000     # restart after editing .env
+curl localhost:8000/api/health            # "voiceConfigured": true
+```
+
+Default model is `eleven_flash_v2_5` (lowest latency); override with `ELEVENLABS_MODEL_ID`. Identical text is cached in memory, so Replay costs nothing.
+
+If the key or voice ID is missing, the `elevenlabs` package isn't installed, or ElevenLabs errors or takes longer than `ELEVENLABS_TIMEOUT_SECONDS` (default 10), the endpoint returns `503 {"error": "voice_unavailable"}` with no details, and the browser speaks the line with its built in speech instead.
+
+`python voice_test.py` checks all of this without calling ElevenLabs.
