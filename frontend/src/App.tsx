@@ -70,7 +70,7 @@ function Screens() {
     <>
       {/* Talk stays mounted so the conversation survives tab switches. */}
       <div className="tab-view" hidden={tab !== 'talk'}>
-        <TalkPage profileName={profile.name} initialAsk={params.get('ask') ?? undefined} />
+        <TalkPage profileName={profile.name} profile={profile} initialAsk={params.get('ask') ?? undefined} />
       </div>
       <div className="tab-view" key={tab} hidden={tab === 'talk'}>
         {tab === 'foryou' && <ForYouPage profile={profile} />}

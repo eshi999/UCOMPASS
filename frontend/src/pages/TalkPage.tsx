@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ChatTurn } from '../types';
+import type { ChatTurn, StudentProfile } from '../types';
 import { ChatComposer } from '../components/ChatComposer';
 import { PawAvatar } from '../components/PawAvatar';
 import { PawBlockView } from '../components/PawBlockView';
@@ -10,7 +10,15 @@ import logo from '../assets/ucompass-logo.png';
 
 const chipIcons: IconName[] = ['calendar', 'heart', 'ticket', 'users', 'book', 'car'];
 
-export function TalkPage({ profileName, initialAsk }: { profileName: string; initialAsk?: string }) {
+export function TalkPage({
+  profileName,
+  profile,
+  initialAsk,
+}: {
+  profileName: string;
+  profile?: StudentProfile;
+  initialAsk?: string;
+}) {
   const [input, setInput] = useState('');
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [thinking, setThinking] = useState(false);
@@ -31,7 +39,7 @@ export function TalkPage({ profileName, initialAsk }: { profileName: string; ini
     setInput('');
     setThinking(true);
     try {
-      const blocks = await askPaw(text);
+      const blocks = await askPaw(text, profile);
       setTurns((t) => [...t, { id: `p${id}`, role: 'paw', blocks }]);
     } catch (error) {
       console.error(error);
