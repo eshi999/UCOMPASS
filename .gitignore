@@ -2,9 +2,19 @@
 .env.*
 !.env.example
 
-node_modules
-dist
-
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
 .venv/
+venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
